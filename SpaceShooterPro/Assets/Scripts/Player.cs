@@ -9,7 +9,14 @@ public class Player : MonoBehaviour
     // every variale has an name
     // optional value assiged
     [SerializeField]
-   private float _speed = 3.5f;
+    private float _speed = 3.5f;
+
+    [SerializeField]
+    private GameObject _laserPrefab;
+
+    [SerializeField]
+    private float _fireRate = 0.15f;
+    private float _canFire = -1f;
 
     // Start is called before the first frame update
     void Start()
@@ -20,25 +27,37 @@ public class Player : MonoBehaviour
 
     // Update is called once per frame
     void Update()
-    { 
+    {
+        CalculateMovement();
+
+        if (Input.GetKeyDown(KeyCode.Space) && Time.time > _canFire)
+        {
+            FireLaser();
+        }
+    }
+
+    void CalculateMovement()
+    {
         float horizontalInput = Input.GetAxis("Horizontal");
         float verticalInput = Input.GetAxis("Vertical");
-
-        // Vector3.right = new Vector3(1, 0, 0)
-        //transform.Translate(Vector3.right * horizontalInput * _speed * Time.deltaTime);
-        //transform.Translate(Vector3.up * verticalInput * _speed * Time.deltaTime);
 
         Vector3 direction = new Vector3(horizontalInput, verticalInput, 0);
         transform.Translate(direction * _speed * Time.deltaTime);
 
-        if(transform.position.y >= 0)
-        {
-            transform.position = new Vector3(transform.position.x, 0, 0);
-        }
-        else if (transform.position.y <= -3.8f)
-        {
-            transform.position = new Vector3(transform.position.x, -3.8f, 0);
-        }
+        //if (transform.position.y >= 0)
+        //{
+        //    transform.position = new Vector3(transform.position.x, 0, 0);
+        //}
+        //else if (transform.position.y <= -3.8f)
+        //{
+        //    transform.position = new Vector3(transform.position.x, -3.8f, 0);
+        //}
+
+        // Das selbe, wie das obere if - Statement
+        transform.position = new Vector3(
+            transform.position.x,
+            Mathf.Clamp(transform.position.y, -3.8f, 0),
+            0);
 
         if (transform.position.x >= 11.3f)
         {
@@ -48,5 +67,14 @@ public class Player : MonoBehaviour
         {
             transform.position = new Vector3(11.3f, transform.position.y, 0);
         }
+    }
+
+    void FireLaser()
+    {
+        
+        _canFire = Time.time + _fireRate;
+        Instantiate(_laserPrefab, 
+            transform.position + new Vector3(0, 0.8f, 0), 
+            Quaternion.identity);
     }
 }
