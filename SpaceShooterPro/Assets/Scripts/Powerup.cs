@@ -5,7 +5,7 @@ using UnityEngine;
 public class Powerup : MonoBehaviour
 {
     [SerializeField]
-    private float _speed  = 3.0f;
+    private float _speed  = 5.0f;
     [SerializeField]
     private PowerupState powerupState;
 
@@ -35,12 +35,17 @@ public class Powerup : MonoBehaviour
                 {
                     case PowerupState.TrippleShot:
                         player.ActivateTrippleShot();
+                        Debug.Log("Kollision with TrippleShot");
                         break;
                     case PowerupState.Speed:
+                        player.ActivateSpeedBoost();
                         Debug.Log("Kollision with PowerupSpeed");
                         break;
                     case PowerupState.Shield:
                         Debug.Log("Kollision with PowerupShield");
+                        break;
+                    default:
+                        Debug.Log("Default!");
                         break;
                 }
             }
