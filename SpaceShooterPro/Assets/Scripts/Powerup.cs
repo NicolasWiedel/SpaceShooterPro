@@ -6,12 +6,8 @@ public class Powerup : MonoBehaviour
 {
     [SerializeField]
     private float _speed  = 3.0f;
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    [SerializeField]
+    private PowerupState powerupState;
 
     // Update is called once per frame
     void Update()
@@ -31,13 +27,30 @@ public class Powerup : MonoBehaviour
     {
         if(other.tag == "Player")
         {
-            Debug.Log("Kollision mit dem Spieler!");
             Destroy(this.gameObject);
             Player player = other.transform.GetComponent<Player>();
             if (player != null)
             {
-                player.ActivateTrippleShot();
+                switch (powerupState)
+                {
+                    case PowerupState.TrippleShot:
+                        player.ActivateTrippleShot();
+                        break;
+                    case PowerupState.Speed:
+                        Debug.Log("Kollision with PowerupSpeed");
+                        break;
+                    case PowerupState.Shield:
+                        Debug.Log("Kollision with PowerupShield");
+                        break;
+                }
             }
         }
+    }
+
+    public enum PowerupState
+    {
+        TrippleShot,
+        Speed,
+        Shield
     }
 }
