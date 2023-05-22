@@ -29,6 +29,11 @@ public class Player : MonoBehaviour
     private bool isTrippleShotActive = false;
     [SerializeField]
     private bool isSpeedBoostActive = false;
+    [SerializeField]
+    private bool isShieldActive = false;
+
+    [SerializeField]
+    private GameObject _shield;
 
     // Start is called before the first frame update
     void Start()
@@ -108,12 +113,21 @@ public class Player : MonoBehaviour
 
     public void Damage()
     {
-        _lives--;
-        if(_lives < 1)
+        if (!isShieldActive)
         {
-            _spawnManager.OnPlayerDead();
-            Destroy(this.gameObject);
+            _lives--;
+            if (_lives < 1)
+            {
+                _spawnManager.OnPlayerDead();
+                Destroy(this.gameObject);
+            }
         }
+        else if (isShieldActive)
+        {
+            isShieldActive = false;
+            _shield.SetActive(false);
+        }
+        
     }
     public void ActivateTrippleShot()
     {
@@ -144,5 +158,11 @@ public class Player : MonoBehaviour
         yield return new WaitForSeconds(10.0f);
         isSpeedBoostActive = false;
         _speedMultiplier /= _speedMultiplier;
+    }
+
+    public void ActivateShield()
+    {
+        isShieldActive = true;
+        _shield.SetActive(true);
     }
 }
