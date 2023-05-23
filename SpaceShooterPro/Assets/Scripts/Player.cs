@@ -35,6 +35,11 @@ public class Player : MonoBehaviour
     [SerializeField]
     private GameObject _shield;
 
+    [SerializeField]
+    private int _score;
+
+    private UIManager _uiManager;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -43,6 +48,12 @@ public class Player : MonoBehaviour
         if(_spawnManager == null)
         {
             Debug.LogError("The Spawn Manager is null");
+        }
+
+        _uiManager = GameObject.Find("Canvas").GetComponent<UIManager>();
+        if (_uiManager == null)
+        {
+            Debug.LogError("The UI Manager is null");
         }
     }
 
@@ -116,6 +127,7 @@ public class Player : MonoBehaviour
         if (!isShieldActive)
         {
             _lives--;
+            _uiManager.UpdateLives(_lives);
             if (_lives < 1)
             {
                 _spawnManager.OnPlayerDead();
@@ -164,5 +176,11 @@ public class Player : MonoBehaviour
     {
         isShieldActive = true;
         _shield.SetActive(true);
+    }
+
+    public void AddEnemyKillScore(int points)
+    {
+        _score += points;
+        _uiManager.UpdateScore(_score);
     }
 }
